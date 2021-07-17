@@ -1,0 +1,18 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 33061,
+    "username": "root",
+    "password": "secret",
+    "database": "lingu_01A",
+    "entities": [
+        "entity/*.js"
+    ],
+    "migrationsTableName": "generic_migrations",
+    "migrations": [
+        "migration/*.js"
+    ],
+    "cli": {
+        "migrationsDir": "migration"
+    }
+}
