@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/storage/database/main.db
 
 # Logs
 logs

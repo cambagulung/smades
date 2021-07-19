@@ -1,18 +1,8 @@
 {
-    "type": "mysql",
-    "host": "localhost",
-    "port": 33061,
-    "username": "root",
-    "password": "secret",
-    "database": "lingu_01A",
+    "type": "sqlite",
+    "database": "storage/database/main.db",
+    "synchronize": true,
     "entities": [
-        "entity/*.js"
-    ],
-    "migrationsTableName": "generic_migrations",
-    "migrations": [
-        "migration/*.js"
-    ],
-    "cli": {
-        "migrationsDir": "migration"
-    }
+        "dist/**/*.entity{.ts,.js}"
+    ]
 }
