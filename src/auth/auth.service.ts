@@ -12,18 +12,9 @@ export class AuthService {
   constructor(
     @Inject(REQUEST)
     private request: Request,
-    private usersService: UsersService,
     private sessionService: SessionsService,
     private jwtService: JwtService,
   ) {}
-
-  async validateUser(username: string, pass: string): Promise<User> {
-    const user = await this.usersService.findByUsername(username);
-
-    if (user && compareSync(pass, user.password)) return user;
-
-    throw new UnauthorizedException();
-  }
 
   async login(user: User) {
     const session = await this.sessionService.create({

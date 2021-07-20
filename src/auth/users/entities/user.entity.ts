@@ -1,3 +1,4 @@
+import { Action } from 'src/auth/action.enum';
 import { Session } from 'src/auth/sessions/entities/session.entity';
 import {
   Entity,
@@ -32,4 +33,8 @@ export class User extends BaseEntity {
 
   @Column({ default: new Date().getTime() })
   updatedAt: Date;
+
+  can(action: Action): boolean {
+    return false;
+  }
 }

@@ -34,6 +34,10 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { username } });
   }
 
+  findByEmail(email: string): Promise<User> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
