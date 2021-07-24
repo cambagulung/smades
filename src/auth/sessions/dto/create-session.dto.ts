@@ -1,10 +1,10 @@
 import { IsNotEmpty, IsString, IsIP } from 'class-validator';
-import { User } from 'src/auth/users/entities/user.entity';
+import { UserEntity } from 'src/auth/users/entities/user.entity';
 
 export class CreateSessionDto {
   @IsString()
   @IsNotEmpty()
-  user: User;
+  user: UserEntity;
 
   @IsString()
   @IsNotEmpty()

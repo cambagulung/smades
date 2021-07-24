@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hashSync } from 'bcrypt';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const user = new User();
+  create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const user = new UserEntity();
     const pass = hashSync(createUserDto.password, 10);
 
     Object.assign(user, { ...createUserDto, password: pass });
@@ -22,27 +22,27 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(): Promise<UserEntity[]> {
+    return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findById(id: string): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail(id);
   }
 
-  findByUsername(username: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { username } });
+  findByUsername(username: string): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail({ where: { username } });
   }
 
-  findByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { email } });
+  findByEmail(email: string): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail({ where: { email } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(user: UserEntity, data: UpdateUserDto): Promise<UpdateResult> {
+    return this.usersRepository.update(user, data);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(user: UserEntity): Promise<UserEntity> {
+    return this.usersRepository.remove(user);
   }
 }

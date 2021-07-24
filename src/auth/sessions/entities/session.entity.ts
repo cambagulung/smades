@@ -1,4 +1,4 @@
-import { User } from 'src/auth/users/entities/user.entity';
+import { UserEntity } from 'src/auth/users/entities/user.entity';
 import {
   Entity,
   Column,
@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'auth_sessions' })
-export class Session extends BaseEntity {
+export class SessionEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -21,12 +21,12 @@ export class Session extends BaseEntity {
   @Column()
   ip: string;
 
-  @ManyToOne(() => User, (user) => user.sessions)
-  user: User;
+  @ManyToOne(() => UserEntity, (user) => user.sessions)
+  user: UserEntity;
 
-  @Column({ default: new Date().getTime() })
+  @Column({ default: new Date().toISOString() })
   createdAt: Date;
 
-  @Column({ default: new Date().getTime() })
+  @Column({ default: new Date().toISOString() })
   lastSeen: Date;
 }

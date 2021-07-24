@@ -7,15 +7,19 @@ import { UsersModule } from './users/users.module';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { SessionsModule } from './sessions/sessions.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
 @Module({
   imports: [
     UsersModule,
-    PassportModule,
     SessionsModule,
+    PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '60s' },
     }),
+    PermissionsModule,
+    RolesModule,
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService, JwtModule],

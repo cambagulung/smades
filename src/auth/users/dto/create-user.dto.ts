@@ -1,20 +1,23 @@
-import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, Validate } from 'class-validator';
+import { UniqueRule } from '../unique.rule';
 
 export class CreateUserDto {
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   name: string;
 
-  @IsEmail()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  @Validate(UniqueRule)
   email: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @Validate(UniqueRule)
   username: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   password: string;
 }
