@@ -14,21 +14,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ sub: sessionId }: { sub: string }) {
+  async validate({ sub: sessionUuid }: { sub: string }) {
     try {
-      const session = await this.sessionService.findOne(sessionId);
+      const session = await this.sessionService.findOne(sessionUuid);
 
       if (session) {
         if (session.user) {
-          this.sessionService.update(sessionId, { lastSeen: new Date() });
+          this.sessionService.update(sessionUuid, { lastSeen: new Date() });
 
-          return {
-            ...session.user,
+          Object.assign(session.user, {
             activeSession: { ...session, user: undefined },
-          };
+          });
+
+          return session.user;
         }
 
-        this.sessionService.remove(session);
+        this.sessionService.remove(sessionUuid);
       }
     } catch {}
 

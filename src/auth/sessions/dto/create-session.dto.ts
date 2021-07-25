@@ -4,13 +4,13 @@ import { UserEntity } from 'src/auth/users/entities/user.entity';
 export class CreateSessionDto {
   @IsString()
   @IsNotEmpty()
-  user: UserEntity;
+  readonly user: UserEntity;
 
   @IsString()
   @IsNotEmpty()
-  device: string;
+  readonly device: string;
 
   @IsIP()
   @IsNotEmpty()
-  ip: string;
+  readonly ip: string;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hashSync } from 'bcrypt';
-import { Repository, UpdateResult } from 'typeorm';
+import { genSaltSync, hashSync } from 'bcrypt';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -14,35 +14,52 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const user = new UserEntity();
-    const pass = hashSync(createUserDto.password, 10);
-
-    Object.assign(user, { ...createUserDto, password: pass });
+    const pass = hashSync(createUserDto.password, genSaltSync(10));
+    const user = new UserEntity({ ...createUserDto, password: pass });
 
     return this.usersRepository.save(user);
+  }
+
+  take({ take, page }: { take: number; page: number }): Promise<UserEntity[]> {
+    const skip = page * take - take;
+
+    return this.usersRepository.find({ take, skip });
   }
 
   findAll(): Promise<UserEntity[]> {
     return this.usersRepository.find();
   }
 
-  findById(id: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail(id);
+  findOne(uuid: string): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail(uuid);
   }
 
   findByUsername(username: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail({ where: { username } });
+    return this.usersRepository.findOneOrFail({ username });
   }
 
   findByEmail(email: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail({ where: { email } });
+    return this.usersRepository.findOneOrFail({ email });
   }
 
-  update(user: UserEntity, data: UpdateUserDto): Promise<UpdateResult> {
-    return this.usersRepository.update(user, data);
+  async update(
+    uuid: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.findOne(uuid);
+
+    if (updateUserDto.password) {
+      const password = hashSync(updateUserDto.password, genSaltSync(10));
+
+      Object.assign(updateUserDto, { password });
+    }
+
+    Object.assign(user, updateUserDto);
+
+    return this.usersRepository.save(user);
   }
 
-  remove(user: UserEntity): Promise<UserEntity> {
-    return this.usersRepository.remove(user);
+  async remove(uuid: string): Promise<UserEntity> {
+    return this.usersRepository.remove(await this.findOne(uuid));
   }
 }

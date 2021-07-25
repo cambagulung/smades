@@ -25,12 +25,12 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign({
         username: session.user.username,
-        sub: session.id,
+        sub: session.uuid,
       }),
     };
   }
 
   logout(session: SessionEntity) {
-    return this.sessionService.remove(session);
+    return this.sessionService.remove(session.uuid);
   }
 }

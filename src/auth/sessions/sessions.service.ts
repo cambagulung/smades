@@ -13,26 +13,29 @@ export class SessionsService {
   ) {}
 
   create(createSessionDto: CreateSessionDto): Promise<SessionEntity> {
-    const session = new SessionEntity();
-
-    Object.assign(session, createSessionDto);
-
-    return this.sessionRepository.save(session);
+    return this.sessionRepository.save(new SessionEntity(createSessionDto));
   }
 
   findAll() {
     return `This action returns all sessions`;
   }
 
-  findOne(id: string) {
-    return this.sessionRepository.findOne(id, { relations: ['user'] });
+  findOne(uuid: string) {
+    return this.sessionRepository.findOneOrFail(uuid, { relations: ['user'] });
   }
 
-  update(id: string, updateSessionDto: UpdateSessionDto) {
-    return this.sessionRepository.update(id, updateSessionDto);
+  async update(
+    uuid: string,
+    updateSessionDto: UpdateSessionDto,
+  ): Promise<SessionEntity> {
+    const session = await this.sessionRepository.findOneOrFail(uuid);
+
+    Object.assign(session, updateSessionDto);
+
+    return this.sessionRepository.save(session);
   }
 
-  remove(session: SessionEntity) {
-    return this.sessionRepository.remove(session);
+  async remove(uuid: string) {
+    return this.sessionRepository.remove(await this.findOne(uuid));
   }
 }

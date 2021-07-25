@@ -9,7 +9,6 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { SessionEntity } from 'src/auth/sessions/entities/session.entity';
 import { UserEntity } from 'src/auth/users/entities/user.entity';
 
 @Controller('api/v1/auth')
@@ -24,8 +23,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Delete()
-  logout(@Request() { session }: { session: SessionEntity }) {
-    return this.authService.logout(session);
+  logout(@Request() { user }: { user: UserEntity }) {
+    return this.authService.logout(user.activeSession);
   }
 
   @UseGuards(JwtAuthGuard)

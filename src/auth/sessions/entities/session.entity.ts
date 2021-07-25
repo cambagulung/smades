@@ -1,19 +1,12 @@
+import { BaseEntity } from 'src/base-entity';
 import { UserEntity } from 'src/auth/users/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  BaseEntity,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { CreateSessionDto } from '../dto/create-session.dto';
 
 @Entity({ name: 'auth_sessions' })
-export class SessionEntity extends BaseEntity {
+export class SessionEntity extends BaseEntity<CreateSessionDto> {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column()
-  userId: string;
+  uuid: string;
 
   @Column()
   device: string;

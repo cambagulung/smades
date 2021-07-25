@@ -1,4 +1,5 @@
-import { AbastractEntity } from 'src/abstract.entity';
+import { BaseEntity } from 'src/base-entity';
+import { ArticleEntity } from 'src/article/articles/entities/article.entity';
 import { PermissionEntity } from 'src/auth/permissions/entities/permission.entity';
 import { RoleEntity } from 'src/auth/roles/entities/role.entity';
 import { SessionEntity } from 'src/auth/sessions/entities/session.entity';
@@ -10,13 +11,14 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Entity({ name: 'auth_users' })
-export class UserEntity extends AbastractEntity {
+export class UserEntity extends BaseEntity<CreateUserDto> {
   activeSession: SessionEntity;
 
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  uuid: string;
 
   @Column()
   name: string;
@@ -30,7 +32,7 @@ export class UserEntity extends AbastractEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => SessionEntity, (session) => session.userId)
+  @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
   @Column({ default: new Date().toISOString() })
@@ -38,6 +40,10 @@ export class UserEntity extends AbastractEntity {
 
   @Column({ default: new Date().toISOString() })
   updatedAt: Date;
+
+  @ManyToMany(() => ArticleEntity, (article) => article.user)
+  @JoinTable()
+  articles: ArticleEntity[];
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.users)
   @JoinTable()

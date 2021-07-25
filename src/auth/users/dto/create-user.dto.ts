@@ -4,20 +4,20 @@ import { UniqueRule } from '../unique.rule';
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
   @Validate(UniqueRule)
-  email: string;
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
   @Validate(UniqueRule)
-  username: string;
+  readonly username: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  readonly password: string;
 }
