@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   NotFoundException,
   Param,
   Patch,
@@ -22,21 +21,6 @@ export class UsersController {
     const user = await this.usersService.create(data);
 
     return user.noPassword;
-  }
-
-  @Get(':uuid')
-  async get(@Param('uuid') uuid: string) {
-    try {
-      return this.usersService.findOne(uuid, {
-        relations: ['roles', 'permissions'],
-      });
-    } catch (e) {
-      if (e instanceof EntityNotFoundError) {
-        throw new NotFoundException(e.message);
-      }
-
-      throw e;
-    }
   }
 
   @Patch(':uuid')

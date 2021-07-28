@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Command, _cli } from '@squareboat/nest-console';
 import { PermissionsService } from 'src/auth/permissions/permissions.service';
 import { RolesService } from 'src/auth/roles/roles.service';

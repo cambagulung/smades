@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcrypt';
-import { FindOneOptions, Repository } from 'typeorm';
+import {
+  FindOneOptions,
+  QueryBuilder,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { PermissionEntity } from '../permissions/entities/permission.entity';
 import { RoleEntity } from '../roles/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -94,11 +99,6 @@ export class UsersService {
   async attachRoles(uuid: string, roles: RoleEntity[]) {
     const user = await this.findOne(uuid, { relations: ['roles'] });
 
-
-    Logger.debug(JSON.stringify(user.toJson));
-
-    Logger.debug(JSON.stringify([...user.roles, ...roles]));
-
     return this.update(uuid, {
       roles: [...user.roles, ...roles],
     });
@@ -109,5 +109,35 @@ export class UsersService {
     const deta = user.roles.filter((e) => !roles.includes(e.name));
 
     return this.update(user, { roles: deta });
+  }
+
+  async userCan(uuid: string, permission: string) {
+    const count = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.roles', 'role')
+      .leftJoin('user.permissions', 'permission')
+      .leftJoin('role.permissions', 'rolePermission')
+      .where('user_uuid = :userUuuid')
+      .where((queryBuilder) => {
+        queryBuilder
+          .where('permission.name = :permission')
+          .orWhere('rolePermission.name = :permission');
+      })
+      .setParameters({ permission, userUuid: uuid })
+      .getCount();
+
+    return count >= 1;
+  }
+
+  async hasRole(uuid: string, role: string) {
+    const count = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.roles', 'role')
+      .where('user_uuid = :userUuuid')
+      .where('role.name = :role')
+      .setParameters({ role, userUuid: uuid })
+      .getCount();
+
+    return count >= 1;
   }
 }
