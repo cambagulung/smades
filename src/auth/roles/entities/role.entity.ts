@@ -19,10 +19,9 @@ export class RoleEntity extends BaseEntity<CreateRoleDto> {
   name: string;
 
   @ManyToMany(() => UserEntity, (user) => user.roles)
-  @JoinTable()
   users: UserEntity[];
 
-  @ManyToMany(() => PermissionEntity, (permission) => permission.users)
+  @ManyToMany(() => PermissionEntity, (permission) => permission.roles)
   @JoinTable()
   permissions: PermissionEntity[];
 }

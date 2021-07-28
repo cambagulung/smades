@@ -1,10 +1,8 @@
 import { ArticleEntity } from 'src/article/articles/entities/article.entity';
-import { PermissionEntity } from 'src/auth/permissions/entities/permission.entity';
 import {
   BaseEntity,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -27,10 +25,5 @@ export class CategoryEntity extends BaseEntity {
   createdAt: Date;
 
   @ManyToMany(() => ArticleEntity, (article) => article.categories)
-  @JoinTable()
   articles: ArticleEntity[];
-
-  @ManyToMany(() => PermissionEntity, (permission) => permission.users)
-  @JoinTable()
-  permissions: PermissionEntity[];
 }

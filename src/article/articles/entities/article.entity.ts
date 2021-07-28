@@ -39,18 +39,14 @@ export class ArticleEntity extends BaseEntity {
   categories: CategoryEntity[];
 
   @OneToMany(() => ArticleEntity, (history) => history.parent)
-  @JoinTable()
   histories: ArticleEntity[];
 
   @ManyToOne(() => ArticleEntity, (parent) => parent.histories)
-  @JoinTable()
   parent: ArticleEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.articles)
-  @JoinTable()
   user: UserEntity;
 
   @ManyToOne(() => UserEntity)
-  @JoinTable()
   publishedBy: UserEntity;
 }

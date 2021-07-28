@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcrypt';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
+import { PermissionEntity } from '../permissions/entities/permission.entity';
+import { RoleEntity } from '../roles/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -30,23 +32,34 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(uuid: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail(uuid);
+  findOne(
+    uuid: string,
+    options?: FindOneOptions<UserEntity>,
+  ): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail(uuid, options);
   }
 
-  findByUsername(username: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail({ username });
+  findByUsername(
+    username: string,
+    options?: FindOneOptions<UserEntity>,
+  ): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail({ username }, options);
   }
 
-  findByEmail(email: string): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail({ email });
+  findByEmail(
+    email: string,
+    options?: FindOneOptions<UserEntity>,
+  ): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail({ email }, options);
   }
 
   async update(
-    uuid: string,
+    user: string | UserEntity,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    const user = await this.findOne(uuid);
+    if (typeof user == 'string') {
+      user = await this.findOne(user);
+    }
 
     if (updateUserDto.password) {
       const password = hashSync(updateUserDto.password, genSaltSync(10));
@@ -54,12 +67,47 @@ export class UsersService {
       Object.assign(updateUserDto, { password });
     }
 
-    Object.assign(user, updateUserDto);
-
-    return this.usersRepository.save(user);
+    return this.usersRepository.save({ ...user, ...updateUserDto });
   }
 
   async remove(uuid: string): Promise<UserEntity> {
     return this.usersRepository.remove(await this.findOne(uuid));
+  }
+
+  async attachPermissions(uuid: string, permissions: PermissionEntity[]) {
+    const user = await this.findOne(uuid, {
+      relations: ['permissions', 'roles'],
+    });
+
+    return this.update(uuid, {
+      permissions: [...user.permissions, ...permissions],
+    });
+  }
+
+  async detachPermissions(uuid: string, permissions: string[]) {
+    const user = await this.findOne(uuid, { relations: ['permissions'] });
+    const deta = user.permissions.filter((e) => !permissions.includes(e.name));
+
+    return this.update(user, { permissions: deta });
+  }
+
+  async attachRoles(uuid: string, roles: RoleEntity[]) {
+    const user = await this.findOne(uuid, { relations: ['roles'] });
+
+
+    Logger.debug(JSON.stringify(user.toJson));
+
+    Logger.debug(JSON.stringify([...user.roles, ...roles]));
+
+    return this.update(uuid, {
+      roles: [...user.roles, ...roles],
+    });
+  }
+
+  async detachRoles(uuid: string, roles: string[]) {
+    const user = await this.findOne(uuid, { relations: ['roles'] });
+    const deta = user.roles.filter((e) => !roles.includes(e.name));
+
+    return this.update(user, { roles: deta });
   }
 }

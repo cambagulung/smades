@@ -2,25 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { Command, _cli } from '@squareboat/nest-console';
 import { CreatePermissionDto } from 'src/auth/permissions/dto/create-permission.dto';
 import { PermissionsService as BasePermissionsService } from 'src/auth/permissions/permissions.service';
-import { QueryFailedError } from 'typeorm';
+import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 
 @Injectable()
-class LocalPermissionsService {
+class CliPermissionsService {
   constructor(private permissionsService: BasePermissionsService) {}
 
   @Command('permission:create', {
     desc: 'Create permission',
-    args: { name: { req: false } },
+    args: { name: { req: true } },
   })
   async permissionCreate({ name }: CreatePermissionDto) {
-    if (name) {
+    if (typeof name == 'string') {
       try {
         await this.permissionsService.create({ name });
 
         return _cli.info(`Permission "${name}" created.`);
       } catch (e) {
         if (e instanceof QueryFailedError) {
-          return _cli.error(`Permission "${name} allready exists"`);
+          return _cli.error(`Permission "${name}" allready exists`);
         }
 
         throw e;
@@ -30,19 +30,19 @@ class LocalPermissionsService {
     _cli.error('required --name');
   }
 
-  @Command('permission:delet', {
-    desc: 'Create permission',
-    args: { name: { req: false } },
+  @Command('permission:delete', {
+    desc: 'Delete permission',
+    args: { name: { req: true } },
   })
   async permissionDelete({ name }: CreatePermissionDto) {
-    if (name) {
+    if (typeof name == 'string') {
       try {
-        await this.permissionsService.create({ name });
+        await this.permissionsService.removeByName(name);
 
-        return _cli.info(`Permission "${name}" created.`);
+        return _cli.info(`Permission "${name}" deleted.`);
       } catch (e) {
-        if (e instanceof QueryFailedError) {
-          return _cli.error(`Permission "${name} allready exists"`);
+        if (e instanceof EntityNotFoundError) {
+          return _cli.error(`Permission "${name}" not exists`);
         }
 
         throw e;
@@ -53,4 +53,4 @@ class LocalPermissionsService {
   }
 }
 
-export { LocalPermissionsService as PermissionsService };
+export { CliPermissionsService as PermissionsService };

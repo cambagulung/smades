@@ -39,8 +39,10 @@ export class PermissionsService {
   }
 
   async remove(uuid: string): Promise<PermissionEntity> {
-    const permission = await this.findOne(uuid);
+    return this.permissionRepository.remove(await this.findOne(uuid));
+  }
 
-    return this.permissionRepository.remove(permission);
+  async removeByName(name: string): Promise<PermissionEntity> {
+    return this.permissionRepository.remove(await this.findByName(name));
   }
 }

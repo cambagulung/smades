@@ -41,8 +41,7 @@ export class UserEntity extends BaseEntity<CreateUserDto> {
   @Column({ default: new Date().toISOString() })
   updatedAt: Date;
 
-  @ManyToMany(() => ArticleEntity, (article) => article.user)
-  @JoinTable()
+  @OneToMany(() => ArticleEntity, (article) => article.user)
   articles: ArticleEntity[];
 
   @ManyToMany(() => PermissionEntity, (permission) => permission.users)
