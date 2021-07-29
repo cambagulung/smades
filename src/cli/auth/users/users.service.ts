@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Command, _cli } from '@squareboat/nest-console';
 import { PermissionsService } from 'src/auth/permissions/permissions.service';
 import { RolesService } from 'src/auth/roles/roles.service';
+import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UsersService as BaseUsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
+import { validateOrReject } from 'class-validator';
 
 @Injectable()
 class CliUsersService {
@@ -12,6 +14,25 @@ class CliUsersService {
     private permissionsService: PermissionsService,
     private rolesService: RolesService,
   ) {}
+
+  @Command('user:create', { desc: 'Create new user' })
+  async userCreate() {
+    const createUserDto = new CreateUserDto({
+      name: await _cli.ask('Nama Lengkap'),
+      username: await _cli.ask('Nama Pengguna'),
+      email: await _cli.ask('Alamat E-mail'),
+      password: await _cli.password('Kata Sandi'),
+    });
+
+    try {
+      await validateOrReject(createUserDto);
+    } catch (errors) {
+      Logger.debug(
+        'Caught promise rejection (validation failed). Errors: ',
+        errors,
+      );
+    }
+  }
 
   @Command('user:attach', {
     desc: 'Delete user',

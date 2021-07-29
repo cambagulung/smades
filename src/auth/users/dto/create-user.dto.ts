@@ -2,6 +2,10 @@ import { IsNotEmpty, IsEmail, IsString, Validate } from 'class-validator';
 import { UniqueRule } from '../rules/unique.rule';
 
 export class CreateUserDto {
+  constructor(data?: Partial<CreateUserDto>) {
+    Object.assign(this, data);
+  }
+
   @IsNotEmpty()
   @IsString()
   readonly name: string;
