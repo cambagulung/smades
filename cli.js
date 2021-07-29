@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const console_1 = require('@squareboat/nest-console');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs');
 
 function checkFileExistsSync(filepath) {
