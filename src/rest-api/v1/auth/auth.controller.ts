@@ -9,11 +9,7 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { Can } from 'src/auth/users/decorators/can.decorator';
-import { HasRoles } from 'src/auth/users/decorators/has-roles.decorator';
 import { UserEntity } from 'src/auth/users/entities/user.entity';
-import { CanGuard } from 'src/auth/users/guards/can.guard';
-import { HasRolesGuard } from 'src/auth/users/guards/has-roles.guard';
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -31,8 +27,7 @@ export class AuthController {
     return this.authService.logout(user.activeSession);
   }
 
-  @UseGuards(JwtAuthGuard, CanGuard)
-  @Can('delete article')
+  @UseGuards(JwtAuthGuard)
   @Get()
   verify(@Request() { user }: { user: UserEntity }) {
     return user;
