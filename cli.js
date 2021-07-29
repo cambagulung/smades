@@ -15,7 +15,7 @@ function checkFileExistsSync(filepath) {
   return flag;
 }
 
-if (!checkFileExistsSync('./dist/app.module.js')) {
+if (!checkFileExistsSync('./dist/main.js')) {
   // CHANGE THE FILE TO CHECK IF NEEDED
   console_1.Logger.error(' PLEASE BUILD THE CLI PROJECT FIRST ');
   console_1.Logger.info(' Run command: `npm run build` '); // CHANGE THE BUILD COMMAND IF NEEDED
