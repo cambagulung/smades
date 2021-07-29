@@ -59,10 +59,14 @@ class CliUsersService {
     desc: 'Delete user',
     args: { user: { req: false }, permission: { req: false } },
   })
-  async userDetach(args: { user: string; permission: string }) {
-    if (args.user && args.permission) {
+  async userDetach(args: { user: string; permission?: string; role?: string }) {
+    if (args.user && (args.permission || args.role)) {
       try {
         const user = await this.usersService.findByUsername(args.user);
+
+        if (args.role) {
+          return this.usersService.detachRoles(user.uuid, [args.role]);
+        }
 
         return this.usersService.detachPermissions(user.uuid, [
           args.permission,
@@ -78,7 +82,7 @@ class CliUsersService {
       }
     }
 
-    _cli.error('required --user & --permission');
+    _cli.error('required --user & --permission or --role');
   }
 }
 

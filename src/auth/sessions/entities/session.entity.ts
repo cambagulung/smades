@@ -17,9 +17,9 @@ export class SessionEntity extends BaseEntity<CreateSessionDto> {
   @ManyToOne(() => UserEntity, (user) => user.sessions)
   user: UserEntity;
 
-  @Column({ default: new Date().toISOString() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ default: new Date().toISOString() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   lastSeen: Date;
 }

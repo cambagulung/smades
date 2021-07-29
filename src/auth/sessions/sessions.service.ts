@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { SessionEntity } from './entities/session.entity';
@@ -20,8 +20,8 @@ export class SessionsService {
     return `This action returns all sessions`;
   }
 
-  findOne(uuid: string) {
-    return this.sessionRepository.findOneOrFail(uuid, { relations: ['user'] });
+  findOne(uuid: string, options?: FindOneOptions<SessionEntity>) {
+    return this.sessionRepository.findOneOrFail(uuid, options);
   }
 
   async update(

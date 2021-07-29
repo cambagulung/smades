@@ -1,23 +1,25 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import {
   ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
+import { EntityNotFoundError } from 'typeorm';
+import { UsersService } from '../users.service';
 
 @ValidatorConstraint({ name: 'UserPropertyUnique', async: true })
 export class UniqueRule implements ValidatorConstraintInterface {
-  constructor(
-    @InjectRepository(UserEntity)
-    protected usersRepository: Repository<UserEntity>,
-  ) {}
+  constructor(protected usersService: UsersService) {}
 
   async validate(value: any, args: ValidationArguments) {
-    return !(await this.usersRepository.findOne({
-      where: { [args.property]: value },
-    }));
+    try {
+      return !(await this.usersService.findOneByOptions({
+        where: { [args.property]: value },
+      }));
+    } catch (e) {
+      if (!(e instanceof EntityNotFoundError)) throw e;
+    }
+
+    return true;
   }
 
   defaultMessage(args: ValidationArguments) {

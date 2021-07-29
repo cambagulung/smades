@@ -1,12 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcrypt';
-import {
-  FindOneOptions,
-  QueryBuilder,
-  Repository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { PermissionEntity } from '../permissions/entities/permission.entity';
 import { RoleEntity } from '../roles/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -42,6 +37,10 @@ export class UsersService {
     options?: FindOneOptions<UserEntity>,
   ): Promise<UserEntity> {
     return this.usersRepository.findOneOrFail(uuid, options);
+  }
+
+  findOneByOptions(options?: FindOneOptions<UserEntity>): Promise<UserEntity> {
+    return this.usersRepository.findOneOrFail(options);
   }
 
   findByUsername(
@@ -126,7 +125,7 @@ export class UsersService {
       .setParameters({ permission, userUuid: uuid })
       .getCount();
 
-    return count >= 1;
+    return count > 0 || this.hasRole(uuid, 'super');
   }
 
   async hasRole(uuid: string, role: string) {
@@ -138,6 +137,6 @@ export class UsersService {
       .setParameters({ role, userUuid: uuid })
       .getCount();
 
-    return count >= 1;
+    return count > 0;
   }
 }

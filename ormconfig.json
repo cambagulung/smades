@@ -1,7 +1,10 @@
 {
-    "type": "sqlite",
-    "database": "storage/database/main.db",
-    "synchronize": false,
+    "type": "mysql",
+    "host": "172.28.0.3",
+    "username": "lingu",
+    "password": "lingupw",
+    "database": "lingu_wardes",
+    "synchronize": true,
     "entities": [
         "dist/**/*.entity{.ts,.js}"
     ]

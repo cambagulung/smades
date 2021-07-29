@@ -35,10 +35,10 @@ export class UserEntity extends BaseEntity<CreateUserDto> {
   @OneToMany(() => SessionEntity, (session) => session.user)
   sessions: SessionEntity[];
 
-  @Column({ default: new Date().toISOString() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ default: new Date().toISOString() })
+  @Column({ nullable: true })
   updatedAt: Date;
 
   @OneToMany(() => ArticleEntity, (article) => article.user)

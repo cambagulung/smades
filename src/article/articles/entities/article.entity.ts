@@ -7,8 +7,9 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  TreeChildren,
+  TreeParent,
 } from 'typeorm';
 
 @Entity({ name: 'article_articles' })
@@ -25,23 +26,23 @@ export class ArticleEntity extends BaseEntity {
   @Column({ type: 'text' })
   body: string;
 
-  @Column({ default: new Date().toISOString() })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ default: null })
+  @Column({ nullable: true })
   updatedAt: Date;
 
-  @Column({ default: null })
+  @Column({ nullable: true })
   publishedAt: Date;
 
   @ManyToMany(() => CategoryEntity, (category) => category.articles)
   @JoinTable()
   categories: CategoryEntity[];
 
-  @OneToMany(() => ArticleEntity, (history) => history.parent)
+  @TreeChildren()
   histories: ArticleEntity[];
 
-  @ManyToOne(() => ArticleEntity, (parent) => parent.histories)
+  @TreeParent()
   parent: ArticleEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.articles)

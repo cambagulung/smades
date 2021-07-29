@@ -21,9 +21,6 @@ export class CategoryEntity extends BaseEntity {
   @Column({ type: 'text', default: null })
   description: string;
 
-  @Column({ default: new Date().toISOString() })
-  createdAt: Date;
-
   @ManyToMany(() => ArticleEntity, (article) => article.categories)
   articles: ArticleEntity[];
 }

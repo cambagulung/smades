@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsEmail, IsString, Validate } from 'class-validator';
-import { UniqueRule } from '../unique.rule';
+import { UniqueRule } from '../rules/unique.rule';
 
 export class CreateUserDto {
   @IsNotEmpty()
