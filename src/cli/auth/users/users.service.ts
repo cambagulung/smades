@@ -27,10 +27,9 @@ class CliUsersService {
     try {
       await validateOrReject(createUserDto);
     } catch (errors) {
-      Logger.debug(
-        'Caught promise rejection (validation failed). Errors: ',
-        errors,
-      );
+      errors
+        .map((e) => Object.values(e.constraints))
+        .forEach((e) => _cli.error(e));
     }
   }
 

@@ -15,8 +15,10 @@ function checkFileExistsSync(filepath) {
   return flag;
 }
 
-if (checkFileExistsSync('./dist/main.js')) require('./dist/main');
+if (!checkFileExistsSync('./dist/main.js')) {
+  console_1.Logger.error(' PLEASE BUILD THE CLI PROJECT FIRST ');
+  console_1.Logger.info(' Run command: `npm run build` '); // CHANGE THE BUILD COMMAND IF NEEDED
+  return process.exit();
+}
 
-console_1.Logger.error(' PLEASE BUILD THE CLI PROJECT FIRST ');
-console_1.Logger.info(' Run command: `npm run build` '); // CHANGE THE BUILD COMMAND IF NEEDED
-return process.exit();
+require('./dist/main');
