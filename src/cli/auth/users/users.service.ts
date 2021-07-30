@@ -1,11 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Command, _cli } from '@squareboat/nest-console';
 import { PermissionsService } from 'src/auth/permissions/permissions.service';
 import { RolesService } from 'src/auth/roles/roles.service';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UsersService as BaseUsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
-import { validateOrReject } from 'class-validator';
+import { validateOrReject, ValidationError } from 'class-validator';
 
 @Injectable()
 class CliUsersService {
@@ -28,8 +28,8 @@ class CliUsersService {
       await validateOrReject(createUserDto);
     } catch (errors) {
       errors
-        .map((e) => Object.values(e.constraints))
-        .forEach((e) => _cli.error(e));
+        .map((e: ValidationError) => Object.values(e.constraints))
+        .forEach((e: string) => _cli.error(e));
     }
   }
 

@@ -15,8 +15,6 @@ import { CreateUserDto } from '../dto/create-user.dto';
 
 @Entity({ name: 'auth_users' })
 export class UserEntity extends BaseEntity<CreateUserDto> {
-  activeSession: SessionEntity;
-
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 

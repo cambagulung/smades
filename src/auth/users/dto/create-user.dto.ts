@@ -1,5 +1,7 @@
-import { IsNotEmpty, IsEmail, IsString, Validate } from 'class-validator';
-import { UniqueRule } from '../rules/unique.rule';
+import { IsNotEmpty, IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEqualTo } from 'src/validator/decorators/is-equal-to.decorator';
+import { IsUnique } from 'src/validator/decorators/is-unique.decorator';
+import { UserEntity } from '../entities/user.entity';
 
 export class CreateUserDto {
   constructor(data?: Partial<CreateUserDto>) {
@@ -13,15 +15,19 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @Validate(UniqueRule)
+  @IsUnique(UserEntity)
   readonly email: string;
 
   @IsNotEmpty()
   @IsString()
-  @Validate(UniqueRule)
+  @IsUnique(UserEntity)
   readonly username: string;
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(6)
   readonly password: string;
+
+  @IsEqualTo('password')
+  cPassword: string;
 }
