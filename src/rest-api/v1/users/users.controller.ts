@@ -10,10 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Can } from 'src/auth/users/decorators/can.decorator';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
-import { CanGuard } from 'src/auth/users/guards/can.guard';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
@@ -21,8 +19,6 @@ import { EntityNotFoundError } from 'typeorm';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard, CanGuard)
-  @Can('view user')
   @Get(':username')
   async get(@Param('username') username: string) {
     try {
@@ -38,8 +34,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, CanGuard)
-  @Can('create user')
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() data: CreateUserDto) {
     const user = await this.usersService.create(data);
@@ -47,8 +42,7 @@ export class UsersController {
     return user.noPassword;
   }
 
-  @UseGuards(JwtAuthGuard, CanGuard)
-  @Can('update user')
+  @UseGuards(JwtAuthGuard)
   @Patch(':uuid')
   async update(@Param('uuid') uuid: string, @Body() data: UpdateUserDto) {
     try {
@@ -64,8 +58,7 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard, CanGuard)
-  @Can('delete user')
+  @UseGuards(JwtAuthGuard)
   @Delete(':uuid')
   async delete(@Param('uuid') uuid: string) {
     try {

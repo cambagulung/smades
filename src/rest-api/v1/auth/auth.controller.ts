@@ -1,13 +1,11 @@
 import {
   Controller,
   Delete,
-  ExecutionContext,
   Get,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
@@ -17,7 +15,7 @@ import { UserEntity } from 'src/auth/users/entities/user.entity';
 
 @Controller('api/v1/auth')
 export class AuthController {
-  constructor(private authService: AuthService, private reflector: Reflector) {}
+  constructor(private authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
   @Post()
