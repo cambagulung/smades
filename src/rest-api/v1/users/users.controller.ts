@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   NotFoundException,
   Param,
@@ -10,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { User } from 'src/auth/users/decorators/user.decorator';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
 import { UsersService } from 'src/auth/users/users.service';
@@ -36,41 +38,61 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() data: CreateUserDto) {
-    const user = await this.usersService.create(data);
+  async create(@User('uuid') userUuid: string, @Body() data: CreateUserDto) {
+    const createable = await this.usersService.userCan(userUuid, 'create user');
 
-    return user.noPassword;
+    if (createable) return (await this.usersService.create(data)).noPassword;
+
+    throw new ForbiddenException(
+      'You dont have permissions to create new user',
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':uuid')
-  async update(@Param('uuid') uuid: string, @Body() data: UpdateUserDto) {
-    try {
-      const user = await this.usersService.update(uuid, data);
+  async update(
+    @User('uuid') authUuid: string,
+    @Param('uuid') uuid: string,
+    @Body() data: UpdateUserDto,
+  ) {
+    const updateable = await this.usersService.userCan(authUuid, 'update user');
 
-      return user.noPassword;
-    } catch (e) {
-      if (e instanceof EntityNotFoundError) {
-        throw new NotFoundException(e.message);
+    if (updateable || authUuid == uuid) {
+      try {
+        return (await this.usersService.update(uuid, data)).noPassword;
+      } catch (e) {
+        if (e instanceof EntityNotFoundError) {
+          throw new NotFoundException(e.message);
+        }
+
+        throw e;
       }
-
-      throw e;
     }
+
+    throw new ForbiddenException(
+      'You dont have permissions to update this user',
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':uuid')
-  async delete(@Param('uuid') uuid: string) {
-    try {
-      const user = await this.usersService.remove(uuid);
+  async delete(@User('uuid') authUuid: string, @Param('uuid') uuid: string) {
+    const deletable = this.usersService.userCan(authUuid, 'delete user');
 
-      return user.noPassword;
-    } catch (e) {
-      if (e instanceof EntityNotFoundError) {
-        throw new NotFoundException(e.message);
+    if (deletable && authUuid != uuid) {
+      try {
+        return (await this.usersService.remove(uuid)).noPassword;
+      } catch (e) {
+        if (e instanceof EntityNotFoundError) {
+          throw new NotFoundException(e.message);
+        }
+
+        throw e;
       }
-
-      throw e;
     }
+
+    throw new ForbiddenException(
+      'You dont have permissions to delete this user',
+    );
   }
 }

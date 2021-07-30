@@ -110,33 +110,51 @@ export class UsersService {
     return this.update(user, { roles: deta });
   }
 
-  async userCan(uuid: string, permission: string) {
+  async hasPermissions(uuid: string, ...permissions: string[]) {
     const count = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.roles', 'role')
       .leftJoin('user.permissions', 'permission')
       .leftJoin('role.permissions', 'rolePermission')
-      .where('user_uuid = :userUuuid')
-      .where((queryBuilder) => {
-        queryBuilder
-          .where('permission.name = :permission')
-          .orWhere('rolePermission.name = :permission');
+      .where('user_uuid = :userUuuid', { userUuid: uuid })
+      .where((qb) => {
+        const permission = permissions.shift();
+
+        qb.where('permission.name = :permission', { permission });
+
+        permissions.forEach((permission, i) =>
+          qb.orWhere(`'role.name = :${i}'`, { [i]: permission }),
+        );
       })
-      .setParameters({ permission, userUuid: uuid })
-      .getCount();
 
-    return count > 0 || this.hasRole(uuid, 'super');
-  }
-
-  async hasRole(uuid: string, role: string) {
-    const count = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.roles', 'role')
-      .where('user_uuid = :userUuuid')
-      .where('role.name = :role')
-      .setParameters({ role, userUuid: uuid })
       .getCount();
 
     return count > 0;
+  }
+
+  async hasRoles(uuid: string, ...roles: string[]) {
+    const count = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.roles', 'role')
+      .where('user_uuid = :userUuuid', { userUuid: uuid })
+      .where((qb) => {
+        const role = roles.shift();
+
+        qb.where('role.name = :role', { role });
+
+        roles.forEach((role, i) =>
+          qb.orWhere(`'role.name = :${i}'`, { [i]: role }),
+        );
+      })
+
+      .getCount();
+
+    return count > 0;
+  }
+
+  async userCan(uuid: string, permission: string) {
+    const isSuper = await this.hasRoles(uuid, 'super');
+
+    return isSuper || (await this.hasPermissions(uuid, permission));
   }
 }
