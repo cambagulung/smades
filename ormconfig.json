@@ -3,7 +3,7 @@
     "host": "172.28.0.2",
     "username": "lingu",
     "password": "lingupw",
-    "database": "lingu_wardes",
+    "database": "lingu_smades",
     "synchronize": true,
     "entities": [
         "dist/**/*.entity{.ts,.js}"
