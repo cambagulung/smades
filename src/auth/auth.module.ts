@@ -9,6 +9,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { SessionsModule } from './sessions/sessions.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
+import { BasicStrategy } from './basic.strategy';
 @Module({
   imports: [
     UsersModule,
@@ -21,7 +22,7 @@ import { RolesModule } from './roles/roles.module';
     PermissionsModule,
     RolesModule,
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, BasicStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

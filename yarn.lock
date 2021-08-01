@@ -985,7 +985,7 @@
     "webpack" "5.28.0"
     "webpack-node-externals" "2.5.2"
 
-"@nestjs/common@^6.0.0 || ^7.0.0", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^6.10.11 || ^7.0.0", "@nestjs/common@^6.7.0 || ^7.0.0", "@nestjs/common@^7.0.0", "@nestjs/common@^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^7.0.9", "@nestjs/common@^7.6.15":
+"@nestjs/common@^6.0.0 || ^7.0.0", "@nestjs/common@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/common@^6.10.11 || ^7.0.0", "@nestjs/common@^6.7.0 || ^7.0.0", "@nestjs/common@^6.8.0 || ^7.0.0", "@nestjs/common@^7.0.0", "@nestjs/common@^7.0.0 || ^8.0.0", "@nestjs/common@^7.0.8", "@nestjs/common@^7.0.8 || ^8.0.0", "@nestjs/common@^7.0.9", "@nestjs/common@^7.6.18":
   "integrity" "sha512-BUJQHNhWzwWOkS4Ryndzd4HTeRObcAWV2Fh+ermyo3q3xYQQzNoEWclJVL/wZec8AONELwIJ+PSpWI53VP0leg=="
   "resolved" "https://registry.npmjs.org/@nestjs/common/-/common-7.6.18.tgz"
   "version" "7.6.18"
@@ -995,7 +995,7 @@
     "tslib" "2.2.0"
     "uuid" "8.3.2"
 
-"@nestjs/core@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/core@^6.10.11 || ^7.0.0", "@nestjs/core@^6.7.0 || ^7.0.0", "@nestjs/core@^7.0.0", "@nestjs/core@^7.0.0 || ^8.0.0", "@nestjs/core@^7.0.9", "@nestjs/core@^7.6.15":
+"@nestjs/core@^6.0.0 || ^7.0.0 || ^8.0.0", "@nestjs/core@^6.10.11 || ^7.0.0", "@nestjs/core@^6.7.0 || ^7.0.0", "@nestjs/core@^6.8.0 || ^7.0.0", "@nestjs/core@^7.0.0", "@nestjs/core@^7.0.0 || ^8.0.0", "@nestjs/core@^7.0.9", "@nestjs/core@^7.6.15":
   "integrity" "sha512-CGu20OjIxgFDY7RJT5t1TDGL8wSlTSlbZEkn8U5OlICZEB3WIpi98G7ajJpnRWmEgW8S4aDJmRKGjT+Ntj5U4A=="
   "resolved" "https://registry.npmjs.org/@nestjs/core/-/core-7.6.18.tgz"
   "version" "7.6.18"
@@ -1027,6 +1027,11 @@
   "integrity" "sha512-26AW5jHadLXtvHs+M+Agd9KZ92dDlBrmD0rORlBlvn2KvsWs4JRaKl2mUsrW7YsdZeAu3Hc4ukqyYyDdyCmMWQ=="
   "resolved" "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-1.0.0.tgz"
   "version" "1.0.0"
+
+"@nestjs/mapped-types@0.4.1":
+  "integrity" "sha512-JXrw2LMangSU3vnaXWXVX47GRG1FbbNh4aVBbidDjxT3zlghsoNQY6qyWtT001MCl8lJGo8I6i6+DurBRRxl/Q=="
+  "resolved" "https://registry.npmjs.org/@nestjs/mapped-types/-/mapped-types-0.4.1.tgz"
+  "version" "0.4.1"
 
 "@nestjs/mongoose@^8.0.0":
   "integrity" "sha512-G0Jag+L3lJjdLrStjfkY+24Ir9CJiu4IgrOKdqx2gsVDgOx22y9/NSuH8c/UqmCijQK8nKtiz1qgPRhP5ezUEw=="
@@ -1075,6 +1080,15 @@
     "fs-extra" "9.1.0"
     "jsonc-parser" "3.0.0"
     "pluralize" "8.0.0"
+
+"@nestjs/swagger@^4.8.2":
+  "integrity" "sha512-RSUwcVxrzXF7/b/IZ5lXnYHJ6jIGS9wWRTJKIt1kIaCNWT+0wRfTlAyhQkzs2g35/PTXJEcdIwwY7mBO/bwHzw=="
+  "resolved" "https://registry.npmjs.org/@nestjs/swagger/-/swagger-4.8.2.tgz"
+  "version" "4.8.2"
+  dependencies:
+    "@nestjs/mapped-types" "0.4.1"
+    "lodash" "4.17.21"
+    "path-to-regexp" "3.2.0"
 
 "@nestjs/testing@^7.6.15":
   "integrity" "sha512-1AVk9vWZlPpx4CmzY6z9z0DHFgGCadfr01QdisGFAN740JwKqZWEqz12cVd+nsXDlYQPFRkp2ICBIS/6k1qZGQ=="
@@ -1526,6 +1540,14 @@
   "integrity" "sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA=="
   "resolved" "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz"
   "version" "4.0.0"
+
+"@types/passport-http@^0.3.9":
+  "integrity" "sha512-uQ4vyRdvM0jdWuKpLmi6Q6ri9Nwt8YnHmF7kE6snbthxPrsMWcjRCVc5WcPaQ356ODSZTDgiRYURMPIspCkn3Q=="
+  "resolved" "https://registry.npmjs.org/@types/passport-http/-/passport-http-0.3.9.tgz"
+  "version" "0.3.9"
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
 
 "@types/passport-jwt@^3.0.6":
   "integrity" "sha512-cmAAMIRTaEwpqxlrZyiEY9kdibk94gP5KTF8AT1Ra4rWNZYHNMreqhKUEeC5WJtuN5SJZjPQmV+XO2P5PlnvNQ=="
@@ -4227,7 +4249,7 @@
     "safe-buffer" "5.2.1"
     "uid-safe" "~2.1.5"
 
-"express@4.17.1":
+"express@>=4.0.0", "express@4.17.1":
   "integrity" "sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g=="
   "resolved" "https://registry.npmjs.org/express/-/express-4.17.1.tgz"
   "version" "4.17.1"
@@ -6635,7 +6657,7 @@
   "resolved" "https://registry.npmjs.org/lodash.union/-/lodash.union-4.6.0.tgz"
   "version" "4.6.0"
 
-"lodash@^4.17.19", "lodash@^4.17.21", "lodash@^4.7.0", "lodash@4.x":
+"lodash@^4.17.19", "lodash@^4.17.21", "lodash@^4.7.0", "lodash@4.17.21", "lodash@4.x":
   "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   "version" "4.17.21"
@@ -7731,6 +7753,13 @@
   "integrity" "sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ="
   "resolved" "https://registry.npmjs.org/pascalcase/-/pascalcase-0.1.1.tgz"
   "version" "0.1.1"
+
+"passport-http@^0.3.0":
+  "integrity" "sha1-juU9Q4C+nGDfIVGSUCmCb3cRVgM="
+  "resolved" "https://registry.npmjs.org/passport-http/-/passport-http-0.3.0.tgz"
+  "version" "0.3.0"
+  dependencies:
+    "passport-strategy" "1.x.x"
 
 "passport-jwt@^4.0.0":
   "integrity" "sha512-BwC0n2GP/1hMVjR4QpnvqA61TxenUMlmfNjYNgK0ZAs0HK4SOQkHcSv4L328blNTLtHq7DbmvyNJiH+bn6C5Mg=="
@@ -9446,6 +9475,18 @@
   dependencies:
     "has-flag" "^4.0.0"
     "supports-color" "^7.0.0"
+
+"swagger-ui-dist@^3.18.1":
+  "integrity" "sha512-7aDfpvGrya61WQN4Eb6x5TELvYb5+7SRJQNYySkKUDGiRIwj1A8B2PNsXs4xMD0/5t8uNi4zW58KSofutcBdhw=="
+  "resolved" "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-3.51.2.tgz"
+  "version" "3.51.2"
+
+"swagger-ui-express@*", "swagger-ui-express@^4.1.6":
+  "integrity" "sha512-Xs2BGGudvDBtL7RXcYtNvHsFtP1DBFPMJFRxHe5ez/VG/rzVOEjazJOOSc/kSCyxreCTKfJrII6MJlL9a6t8vw=="
+  "resolved" "https://registry.npmjs.org/swagger-ui-express/-/swagger-ui-express-4.1.6.tgz"
+  "version" "4.1.6"
+  dependencies:
+    "swagger-ui-dist" "^3.18.1"
 
 "symbol-observable@3.0.0":
   "integrity" "sha512-6tDOXSHiVjuCaasQSWTmHUWn4PuG7qa3+1WT031yTc/swT7+rLiw3GOrFxaH1E3lLP09dH3bVuVDf2gK5rxG3Q=="
