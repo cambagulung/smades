@@ -17,9 +17,9 @@ import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
-@Controller('api/v1/article')
+@Controller('api/v1/article/articles')
 export class ArticlesController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get(':username')
   async get(@Param('username') username: string) {

@@ -19,7 +19,7 @@ import { EntityNotFoundError } from 'typeorm';
 
 @Controller('api/v1/users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get(':username')
   async get(@Param('username') username: string) {

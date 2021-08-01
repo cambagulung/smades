@@ -7,7 +7,7 @@ import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private usersService: UsersService) {
+  constructor(private readonly usersService: UsersService) {
     super();
   }
 

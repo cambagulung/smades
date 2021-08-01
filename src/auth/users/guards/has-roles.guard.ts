@@ -4,7 +4,7 @@ import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class HasRolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [

@@ -8,8 +8,8 @@ import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 @Injectable()
 class CliRolesService {
   constructor(
-    private rolesService: BaseRolesService,
-    private permissionsService: PermissionsService,
+    private readonly rolesService: BaseRolesService,
+    private readonly permissionsService: PermissionsService,
   ) {}
 
   @Command('role:create', {

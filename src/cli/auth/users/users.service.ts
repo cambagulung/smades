@@ -10,27 +10,34 @@ import { validateOrReject, ValidationError } from 'class-validator';
 @Injectable()
 class CliUsersService {
   constructor(
-    private usersService: BaseUsersService,
-    private permissionsService: PermissionsService,
-    private rolesService: RolesService,
+    private readonly usersService: BaseUsersService,
+    private readonly permissionsService: PermissionsService,
+    private readonly rolesService: RolesService,
   ) {}
 
   @Command('user:create', { desc: 'Create new user' })
   async userCreate() {
+    const errors = [];
+
     const createUserDto = new CreateUserDto({
-      name: await _cli.ask('Nama Lengkap'),
-      username: await _cli.ask('Nama Pengguna'),
-      email: await _cli.ask('Alamat E-mail'),
-      password: await _cli.password('Kata Sandi'),
+      name: await _cli.ask('Nama Lengkap:'),
+      username: await _cli.ask('Nama Pengguna:'),
+      email: await _cli.ask('Alamat E-mail:'),
+      password: await _cli.password('Kata Sandi:'),
+      cPassword: await _cli.password('Ulangi Kata Sandi:'),
     });
 
     try {
       await validateOrReject(createUserDto);
-    } catch (errors) {
-      errors
+    } catch (err) {
+      err
         .map((e: ValidationError) => Object.values(e.constraints))
-        .forEach((e: string) => _cli.error(e));
+        .forEach((e: string) => errors.push(e));
     }
+
+    if (errors.length === 0) return this.usersService.create(createUserDto);
+
+    errors.forEach((error) => _cli.error(error));
   }
 
   @Command('user:attach', {

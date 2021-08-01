@@ -1,14 +1,10 @@
 import { ArticleEntity } from 'src/article/articles/entities/article.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity } from 'src/base-entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CreateCategoryDto } from '../dto/create-category.dto';
 
 @Entity({ name: 'article_categories' })
-export class CategoryEntity extends BaseEntity {
+export class CategoryEntity extends BaseEntity<CreateCategoryDto> {
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 

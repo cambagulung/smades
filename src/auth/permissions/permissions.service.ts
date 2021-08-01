@@ -9,7 +9,7 @@ import { PermissionEntity } from './entities/permission.entity';
 export class PermissionsService {
   constructor(
     @InjectRepository(PermissionEntity)
-    private permissionRepository: Repository<PermissionEntity>,
+    private readonly permissionRepository: Repository<PermissionEntity>,
   ) {}
 
   create(createPermissionDto: CreatePermissionDto) {

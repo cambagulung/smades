@@ -10,7 +10,7 @@ import { SessionEntity } from './sessions/entities/session.entity';
 export class AuthService {
   constructor(
     @Inject(REQUEST)
-    private request: Request,
+    private readonly request: Request,
     private sessionService: SessionsService,
     private jwtService: JwtService,
   ) {}

@@ -6,8 +6,8 @@ import { UsersService } from '../users.service';
 @Injectable()
 export class CanGuard implements CanActivate {
   constructor(
-    private reflector: Reflector,
-    private usersService: UsersService,
+    private readonly reflector: Reflector,
+    private readonly usersService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

@@ -6,7 +6,7 @@ import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 
 @Injectable()
 class CliPermissionsService {
-  constructor(private permissionsService: BasePermissionsService) {}
+  constructor(private readonly permissionsService: BasePermissionsService) {}
 
   @Command('permission:create', {
     desc: 'Create permission',
