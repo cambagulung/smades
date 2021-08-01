@@ -48,6 +48,7 @@ export class CategoriesController {
   ) {
     const createable = await this.usersService.userCan(
       userUuid,
+      'c',
       'create category',
     );
 

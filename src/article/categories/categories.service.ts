@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryEntity } from './entities/category.entity';
+import { validateOrReject } from 'class-validator';
+
+import Slugify from 'slugify';
 
 @Injectable()
 export class CategoriesService {
@@ -12,7 +15,14 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto) {
+    createCategoryDto = {
+      ...createCategoryDto,
+      slug: Slugify(createCategoryDto.slug, { lower: true }),
+    };
+
+    await validateOrReject(createCategoryDto);
+
     const category = new CategoryEntity(createCategoryDto);
 
     return this.categoryRepository.save(category);
@@ -30,8 +40,11 @@ export class CategoriesService {
     return await this.categoryRepository.findOneOrFail({ slug });
   }
 
-  async update(uuid: string, updateCategoryDto: UpdateCategoryDto) {
-    const category = await this.findOne(uuid);
+  async update(
+    category: string | CategoryEntity,
+    updateCategoryDto: UpdateCategoryDto,
+  ) {
+    if (typeof category == 'string') category = await this.findOne(category);
 
     Object.assign(category, updateCategoryDto);
 

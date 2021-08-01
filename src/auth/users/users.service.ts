@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcrypt';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Brackets, FindOneOptions, Repository } from 'typeorm';
 import { PermissionEntity } from '../permissions/entities/permission.entity';
 import { RoleEntity } from '../roles/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -114,19 +114,17 @@ export class UsersService {
     const count = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.roles', 'role')
-      .leftJoin('user.permissions', 'permission')
       .leftJoin('role.permissions', 'rolePermission')
-      .where('user_uuid = :userUuuid', { userUuid: uuid })
-      .where((qb) => {
-        const permission = permissions.shift();
+      .leftJoin('user.permissions', 'permission')
+      .where('user.uuid = :uuid')
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('permission.name IN (:permissions)');
+          qb.orWhere('rolePermission.name IN (:permissions)');
+        }),
+      )
 
-        qb.where('permission.name = :permission', { permission });
-
-        permissions.forEach((permission, i) =>
-          qb.orWhere(`'role.name = :${i}'`, { [i]: permission }),
-        );
-      })
-
+      .setParameters({ uuid, permissions })
       .getCount();
 
     return count > 0;
@@ -136,25 +134,17 @@ export class UsersService {
     const count = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoin('user.roles', 'role')
-      .where('user_uuid = :userUuuid', { userUuid: uuid })
-      .where((qb) => {
-        const role = roles.shift();
-
-        qb.where('role.name = :role', { role });
-
-        roles.forEach((role, i) =>
-          qb.orWhere(`'role.name = :${i}'`, { [i]: role }),
-        );
-      })
-
+      .where('user.uuid = :uuid')
+      .andWhere('role.name IN (:roles)')
+      .setParameters({ uuid, roles })
       .getCount();
 
     return count > 0;
   }
 
-  async userCan(uuid: string, permission: string) {
+  async userCan(uuid: string, ...permissions: string[]) {
     const isSuper = await this.hasRoles(uuid, 'super');
 
-    return isSuper || (await this.hasPermissions(uuid, permission));
+    return isSuper || (await this.hasPermissions(uuid, ...permissions));
   }
 }

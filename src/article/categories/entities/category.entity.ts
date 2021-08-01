@@ -11,7 +11,7 @@ export class CategoryEntity extends BaseEntity<CreateCategoryDto> {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   slug: string;
 
   @Column({ type: 'text', default: null })

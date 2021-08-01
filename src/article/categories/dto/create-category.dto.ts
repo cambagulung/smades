@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsUnique } from 'src/validator/decorators/is-unique.decorator';
+import { Slug } from 'src/validator/decorators/slug.decorator';
 import { CategoryEntity } from '../entities/category.entity';
 
 export class CreateCategoryDto {
@@ -12,9 +12,8 @@ export class CreateCategoryDto {
   readonly name: string;
 
   @IsNotEmpty()
-  @IsString()
-  @IsUnique(CategoryEntity)
-  readonly slud: string;
+  @Slug(CategoryEntity)
+  readonly slug: string;
 
   @IsNotEmpty()
   @IsString()
