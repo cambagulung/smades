@@ -1,9 +1,9 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { jwtConstants } from './constants';
-import { SessionsService } from './sessions/sessions.service';
-import { UsersService } from './users/users.service';
+import { jwtConstants } from '../constants';
+import { SessionsService } from '../sessions/sessions.service';
+import { UsersService } from '../users/users.service';
 import { Request } from 'express';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             relations: ['roles'],
           });
 
-          this.sessionService.update(sessionUuid, { lastSeen: new Date() });
+          this.sessionService.seen(sessionUuid);
 
           // memasang property asctiveSession untuk keperluan logout dll
           Object.assign(request, { activeSession: session });

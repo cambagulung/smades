@@ -10,7 +10,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreatePermissionDto } from 'src/auth/permissions/dto/create-permission.dto';
 import { UpdatePermissionDto } from 'src/auth/permissions/dto/update-permission.dto';
 import { PermissionsService } from 'src/auth/permissions/permissions.service';

@@ -6,27 +6,21 @@ import { CreateSessionDto } from '../dto/create-session.dto';
 
 @Entity({ name: 'auth_sessions' })
 export class SessionEntity extends BaseEntity<CreateSessionDto> {
-  @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   uuid: string;
 
-  @ApiProperty()
   @Column()
   device: string;
 
-  @ApiProperty()
   @Column()
   ip: string;
 
-  @ApiProperty()
   @ManyToOne(() => UserEntity, (user) => user.sessions)
   user: UserEntity;
 
-  @ApiProperty()
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ApiProperty()
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   lastSeen: Date;
 }

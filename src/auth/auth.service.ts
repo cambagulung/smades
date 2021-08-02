@@ -5,6 +5,7 @@ import { SessionsService } from './sessions/sessions.service';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { SessionEntity } from './sessions/entities/session.entity';
+import { UserDto } from './users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(user: UserEntity) {
+  async login(user: UserDto) {
     const session = await this.sessionService.create({
       user,
       device: this.request.header('user-agent') || '',

@@ -10,13 +10,21 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/auth/users/decorators/user.decorator';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
+import { UserDto } from 'src/auth/users/dto/user.dto';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
+@ApiTags('users')
 @Controller('api/v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -36,6 +44,12 @@ export class UsersController {
     }
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create new User' })
+  @ApiOkResponse({
+    type: UserDto,
+    description: 'Created user',
+  })
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@User('uuid') userUuid: string, @Body() data: CreateUserDto) {

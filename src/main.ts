@@ -27,7 +27,11 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
 
-    SwaggerModule.setup('swag', app, SwaggerModule.createDocument(app, config));
+    SwaggerModule.setup(
+      'api/swagger-docs',
+      app,
+      SwaggerModule.createDocument(app, config),
+    );
 
     await app.listen(process.env.PORT || 3300);
   } else {
@@ -41,10 +45,12 @@ async function bootstrap() {
 
     if (!command || !command.target) {
       Logger.error(` ${argv._[0]} : command not found `);
+
       process.exit();
     }
 
     await CommandRunner.handle(command, argv);
+
     process.exit();
   }
 }

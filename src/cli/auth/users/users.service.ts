@@ -24,7 +24,6 @@ class CliUsersService {
       username: await _cli.ask('Nama Pengguna:'),
       email: await _cli.ask('Alamat E-mail:'),
       password: await _cli.password('Kata Sandi:'),
-      cPassword: await _cli.password('Ulangi Kata Sandi:'),
     });
 
     try {

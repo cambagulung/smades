@@ -6,6 +6,7 @@ import { PermissionEntity } from '../permissions/entities/permission.entity';
 import { RoleEntity } from '../roles/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDto } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
@@ -15,39 +16,60 @@ export class UsersService {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const pass = hashSync(createUserDto.password, genSaltSync(10));
-    const user = new UserEntity({ ...createUserDto, password: pass });
+    const user = await this.usersRepository.save(
+      new UserEntity({ ...createUserDto, password: pass }),
+    );
 
-    return this.usersRepository.save(user);
+    return new UserDto(user);
   }
 
-  take({ take, page }: { take: number; page: number }): Promise<UserEntity[]> {
+  async take({
+    take,
+    page,
+  }: {
+    take: number;
+    page: number;
+  }): Promise<UserDto[]> {
     const skip = page * take - take;
+    const users = await this.usersRepository.find({ take, skip });
 
-    return this.usersRepository.find({ take, skip });
+    return users.map((user) => new UserDto(user));
   }
 
-  findAll(): Promise<UserEntity[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<UserDto[]> {
+    const users = await this.usersRepository.find();
+
+    return users.map((user) => new UserDto(user));
   }
 
-  findOne(
+  async findOne(
     uuid: string,
     options?: FindOneOptions<UserEntity>,
-  ): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail(uuid, options);
+  ): Promise<UserDto> {
+    const user = await this.usersRepository.findOneOrFail(uuid, options);
+
+    return new UserDto(user);
   }
 
-  findOneByOptions(options?: FindOneOptions<UserEntity>): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail(options);
+  async findOneByOptions(
+    options?: FindOneOptions<UserEntity>,
+  ): Promise<UserDto> {
+    const user = await this.usersRepository.findOneOrFail(options);
+
+    return new UserDto(user);
   }
 
-  findByUsername(
+  async findByUsername(
     username: string,
     options?: FindOneOptions<UserEntity>,
-  ): Promise<UserEntity> {
-    return this.usersRepository.findOneOrFail({ username }, options);
+  ): Promise<UserDto> {
+    const user = await this.usersRepository.findOneOrFail(
+      { username },
+      options,
+    );
+    return new UserDto(user);
   }
 
   findByEmail(
@@ -57,13 +79,8 @@ export class UsersService {
     return this.usersRepository.findOneOrFail({ email }, options);
   }
 
-  async update(
-    user: string | UserEntity,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
-    if (typeof user == 'string') {
-      user = await this.findOne(user);
-    }
+  async update(uuid: string, updateUserDto: UpdateUserDto): Promise<UserDto> {
+    const user = await this.usersRepository.findOneOrFail(uuid);
 
     if (updateUserDto.password) {
       const password = hashSync(updateUserDto.password, genSaltSync(10));
@@ -71,16 +88,18 @@ export class UsersService {
       Object.assign(updateUserDto, { password });
     }
 
-    return this.usersRepository.save({ ...user, ...updateUserDto });
+    return this.usersRepository.save(user).then((user) => new UserDto(user));
   }
 
-  async remove(uuid: string): Promise<UserEntity> {
-    return this.usersRepository.remove(await this.findOne(uuid));
+  async remove(uuid: string): Promise<UserDto> {
+    const user = await this.usersRepository.findOneOrFail(uuid);
+
+    return this.usersRepository.remove(user).then((user) => new UserDto(user));
   }
 
   async attachPermissions(uuid: string, permissions: PermissionEntity[]) {
-    const user = await this.findOne(uuid, {
-      relations: ['permissions', 'roles'],
+    const user = await this.usersRepository.findOneOrFail(uuid, {
+      relations: ['permissions'],
     });
 
     return this.update(uuid, {
@@ -89,14 +108,21 @@ export class UsersService {
   }
 
   async detachPermissions(uuid: string, permissions: string[]) {
-    const user = await this.findOne(uuid, { relations: ['permissions'] });
-    const deta = user.permissions.filter((e) => !permissions.includes(e.name));
+    const user = await this.usersRepository.findOneOrFail(uuid, {
+      relations: ['permissions'],
+    });
 
-    return this.update(user, { permissions: deta });
+    return this.update(uuid, {
+      permissions: user.permissions.filter(
+        (e) => !permissions.includes(e.name),
+      ),
+    });
   }
 
   async attachRoles(uuid: string, roles: RoleEntity[]) {
-    const user = await this.findOne(uuid, { relations: ['roles'] });
+    const user = await this.usersRepository.findOneOrFail(uuid, {
+      relations: ['roles'],
+    });
 
     return this.update(uuid, {
       roles: [...user.roles, ...roles],
@@ -104,10 +130,13 @@ export class UsersService {
   }
 
   async detachRoles(uuid: string, roles: string[]) {
-    const user = await this.findOne(uuid, { relations: ['roles'] });
-    const deta = user.roles.filter((e) => !roles.includes(e.name));
+    const user = await this.usersRepository.findOneOrFail(uuid, {
+      relations: ['roles'],
+    });
 
-    return this.update(user, { roles: deta });
+    return this.update(uuid, {
+      roles: user.roles.filter((e) => !roles.includes(e.name)),
+    });
   }
 
   async hasPermissions(uuid: string, ...permissions: string[]) {

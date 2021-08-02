@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CreateSessionDto } from './dto/create-session.dto';
+import { SessionDto } from './dto/session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { SessionEntity } from './entities/session.entity';
 
@@ -12,30 +13,44 @@ export class SessionsService {
     private sessionRepository: Repository<SessionEntity>,
   ) {}
 
-  create(createSessionDto: CreateSessionDto): Promise<SessionEntity> {
-    return this.sessionRepository.save(new SessionEntity(createSessionDto));
+  async create(createSessionDto: CreateSessionDto): Promise<SessionDto> {
+    const session = await this.sessionRepository.save(
+      new SessionEntity(createSessionDto),
+    );
+
+    return new SessionDto(session);
   }
 
   findAll() {
     return `This action returns all sessions`;
   }
 
-  findOne(uuid: string, options?: FindOneOptions<SessionEntity>) {
-    return this.sessionRepository.findOneOrFail(uuid, options);
+  async findOne(uuid: string, options?: FindOneOptions<SessionDto>) {
+    const session = await this.sessionRepository.findOneOrFail(uuid, options);
+
+    return new SessionDto(session);
+  }
+
+  async seen(uuid: string): Promise<SessionDto> {
+    return this.update(uuid, { lastSeen: new Date() });
   }
 
   async update(
     uuid: string,
     updateSessionDto: UpdateSessionDto,
-  ): Promise<SessionEntity> {
+  ): Promise<SessionDto> {
     const session = await this.sessionRepository.findOneOrFail(uuid);
 
     Object.assign(session, updateSessionDto);
 
-    return this.sessionRepository.save(session);
+    return this.sessionRepository
+      .save(session)
+      .then((session) => new SessionDto(session));
   }
 
   async remove(uuid: string) {
-    return this.sessionRepository.remove(await this.findOne(uuid));
+    return this.sessionRepository
+      .remove(await this.sessionRepository.findOneOrFail(uuid))
+      .then((session) => new SessionDto(session));
   }
 }
