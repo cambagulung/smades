@@ -22,19 +22,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(request: Request, { sub: sessionUuid }: { sub: string }) {
     try {
-      const session = await this.sessionService.findOne(sessionUuid, {
-        relations: ['user'],
-      });
+      const session = await this.sessionService.seen(sessionUuid);
+      const user = await this.sessionService.getUser(sessionUuid);
 
       if (session) {
         //mencocokan ip client dengan sesi dan memastikan sesi tertaut ke user
-        if (session.ip == request.ip && session.user) {
-          const user = await this.usersService.findOne(session.user.uuid, {
-            relations: ['roles'],
-          });
-
-          this.sessionService.seen(sessionUuid);
-
+        if (session.ip == request.ip && user) {
           // memasang property asctiveSession untuk keperluan logout dll
           Object.assign(request, { activeSession: session });
 

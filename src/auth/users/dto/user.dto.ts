@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { datatype, internet, name } from 'faker';
-import { PermissionDto } from 'src/auth/permissions/dto/permission.dto';
-import { RoleDto } from 'src/auth/roles/dto/role.dto';
+import { datatype, date, internet, name } from 'faker';
 import { BaseDto } from 'src/base-dto';
 import { UserEntity } from '../entities/user.entity';
 
@@ -9,20 +7,29 @@ export class UserDto extends BaseDto<UserEntity> {
   @ApiProperty({ example: datatype.uuid() })
   readonly uuid: string;
 
-  @ApiProperty({ example: name.firstName() + ' ' + name.lastName() })
+  @ApiProperty({
+    example: name.firstName() + ' ' + name.lastName(),
+    description: 'nama lengkap pemilik akun',
+  })
   readonly name: string;
 
-  @ApiProperty({ example: internet.email() })
+  @ApiProperty({
+    example: internet.email(),
+    description: 'alamat email pemilik akun',
+  })
   readonly email: string;
 
-  @ApiProperty({ example: internet.userName() })
+  @ApiProperty({ example: internet.userName(), description: 'nama pengguna' })
   readonly username: string;
 
-  @ApiProperty({ isArray: true, type: () => RoleDto })
-  readonly roles: RoleDto[];
+  @ApiProperty({ example: date.past(), description: 'tanggal pembuatan akun' })
+  readonly createdAt: string;
 
-  @ApiProperty({ isArray: true, type: () => PermissionDto })
-  readonly permissions: PermissionDto[];
+  @ApiProperty({
+    example: date.past(),
+    description: 'tanggal terakhir diupdate',
+  })
+  readonly updatedAt: string;
 
   readonly password?: string;
 

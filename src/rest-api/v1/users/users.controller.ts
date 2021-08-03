@@ -14,9 +14,12 @@ import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { PermissionDto } from 'src/auth/permissions/dto/permission.dto';
+import { RoleDto } from 'src/auth/roles/dto/role.dto';
 import { User } from 'src/auth/users/decorators/user.decorator';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
@@ -29,6 +32,17 @@ import { EntityNotFoundError } from 'typeorm';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'mengabil data pengguna berdasarkan username' })
+  @ApiParam({
+    name: 'username',
+    example: 'lingu',
+    description: 'username pengguna yang akan dicari',
+  })
+  @ApiOkResponse({
+    type: UserDto,
+    description: 'data pengguna yang diperoleh dari username',
+  })
   @Get(':username')
   async get(@Param('username') username: string) {
     try {
@@ -45,10 +59,48 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create new User' })
+  @ApiOperation({
+    summary: 'mengabil daftar hak akses yang dimiliki pengguna pengguna',
+  })
+  @ApiParam({
+    name: 'username',
+    example: 'lingu',
+    description: 'username pengguna yang akan dicari',
+  })
+  @ApiOkResponse({
+    isArray: true,
+    type: PermissionDto,
+    description: 'daftar hak akses pengguna yang diperoleh dari username',
+  })
+  @Get(':username/permissions')
+  async getPermissions(@Param('username') username: string) {
+    //
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'mengabil daftar posisi pengguna',
+  })
+  @ApiParam({
+    name: 'username',
+    example: 'lingu',
+    description: 'username pengguna yang akan dicari',
+  })
+  @ApiOkResponse({
+    isArray: true,
+    type: RoleDto,
+    description: 'daftar posisi pengguna yang diperoleh dari username',
+  })
+  @Get(':username/roles')
+  async getRoles(@Param('username') username: string) {
+    //
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'mendaftarkan pengguna baru' })
   @ApiOkResponse({
     type: UserDto,
-    description: 'Created user',
+    description: 'data pengguna yang baru saja didaftarkan',
   })
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -62,6 +114,12 @@ export class UsersController {
     );
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'memperbaharui data pengguna' })
+  @ApiOkResponse({
+    type: UserDto,
+    description: 'data pengguna yang baru saja diperbaharui',
+  })
   @UseGuards(JwtAuthGuard)
   @Patch(':uuid')
   async update(
@@ -88,6 +146,12 @@ export class UsersController {
     );
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'menghapus pengguna' })
+  @ApiOkResponse({
+    type: UserDto,
+    description: 'data pengguna yang baru saja dihapus',
+  })
   @UseGuards(JwtAuthGuard)
   @Delete(':uuid')
   async delete(@User('uuid') authUuid: string, @Param('uuid') uuid: string) {

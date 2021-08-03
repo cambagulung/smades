@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { datatype, lorem } from 'faker';
+import { datatype } from 'faker';
 import { PermissionDto } from 'src/auth/permissions/dto/permission.dto';
 import { BaseDto } from 'src/base-dto';
 import { RoleEntity } from '../entities/role.entity';
@@ -19,9 +19,6 @@ export class RoleDto extends BaseDto<RoleEntity> {
   @ApiProperty({ example: datatype.uuid() })
   readonly uuid: string;
 
-  @ApiProperty({ example: lorem.word() })
+  @ApiProperty({ example: 'operator' })
   readonly name: string;
-
-  @ApiProperty({ isArray: true, type: () => PermissionDto })
-  readonly permissions: PermissionDto[];
 }

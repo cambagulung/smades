@@ -39,6 +39,49 @@ class CliUsersService {
     errors.forEach((error) => _cli.error(error));
   }
 
+  @Command('user:has', {
+    desc: 'Cek user permission or role',
+    args: {
+      user: { req: false },
+      permission: { req: false },
+      role: { req: false },
+    },
+  })
+  async userHas(args: { user: string; permission?: string; role?: string }) {
+    if (args.user && (args.permission || args.role)) {
+      try {
+        const user = await this.usersService.findByUsername(args.user);
+
+        if (args.role) {
+          return _cli.info(
+            ((await this.usersService.hasRoles(user.uuid, args.role)) &&
+              'yes') ||
+              'no',
+          );
+        }
+
+        return _cli.info(
+          ((await this.usersService.hasRoles(user.uuid, args.role)) && 'yes') ||
+            'no',
+        );
+      } catch (e) {
+        if (e instanceof EntityNotFoundError) {
+          if (e.message.includes('UserEntity')) {
+            return _cli.error(`User "${args.user}" not exists`);
+          } else if (e.message.includes('PermissionEntity')) {
+            return _cli.error(`Permission "${args.permission}" not exists`);
+          } else if (e.message.includes('RoleEntity')) {
+            return _cli.error(`Role "${args.permission}" not exists`);
+          }
+        }
+
+        throw e;
+      }
+    }
+
+    _cli.error('required --user & --permission or --role');
+  }
+
   @Command('user:attach', {
     desc: 'Delete user',
     args: {

@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from './users/entities/user.entity';
 import { SessionsService } from './sessions/sessions.service';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
@@ -25,7 +24,7 @@ export class AuthService {
 
     return {
       access_token: this.jwtService.sign({
-        username: session.user.username,
+        username: user.username,
         sub: session.uuid,
       }),
     };

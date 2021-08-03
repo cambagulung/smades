@@ -28,15 +28,16 @@ import { UserEntity } from 'src/auth/users/entities/user.entity';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Create new session/login' })
+  @ApiOperation({ summary: 'login, membuat sesi baru' })
   @ApiBasicAuth()
   @ApiOkResponse({
-    description: 'Bearer access_token',
+    description: 'respon server jika berhasil login',
     schema: {
       properties: {
         access_token: {
           type: 'string',
-          example: random.alpha({ count: 128 }),
+          example: random.alphaNumeric(256),
+          description: 'token JWT',
         },
       },
     },
@@ -48,10 +49,10 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete active session/logout' })
+  @ApiOperation({ summary: 'logout, mencabut sesi saat ini' })
   @ApiOkResponse({
     type: SessionDto,
-    description: 'Deleted session',
+    description: 'data sesei yang dicabut',
   })
   @UseGuards(JwtAuthGuard)
   @Delete()
@@ -60,10 +61,10 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Verify access_token' })
+  @ApiOperation({ summary: 'memeriksa access_token' })
   @ApiOkResponse({
     type: UserDto,
-    description: 'Current user',
+    description: 'data user yang tertaut ke access_token',
   })
   @UseGuards(JwtAuthGuard)
   @Get()

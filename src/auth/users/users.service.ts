@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { Brackets, FindOneOptions, Repository } from 'typeorm';
@@ -88,6 +88,8 @@ export class UsersService {
       Object.assign(updateUserDto, { password });
     }
 
+    Object.assign(user, updateUserDto);
+
     return this.usersRepository.save(user).then((user) => new UserDto(user));
   }
 
@@ -142,9 +144,9 @@ export class UsersService {
   async hasPermissions(uuid: string, ...permissions: string[]) {
     const count = await this.usersRepository
       .createQueryBuilder('user')
+      .leftJoin('user.permissions', 'permission')
       .leftJoin('user.roles', 'role')
       .leftJoin('role.permissions', 'rolePermission')
-      .leftJoin('user.permissions', 'permission')
       .where('user.uuid = :uuid')
       .andWhere(
         new Brackets((qb) => {

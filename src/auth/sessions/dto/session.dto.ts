@@ -13,9 +13,6 @@ export class SessionDto extends BaseDto<SessionEntity> {
   @ApiProperty({ example: datatype.uuid() })
   readonly uuid: string;
 
-  @ApiProperty()
-  readonly user: UserDto;
-
   @ApiProperty({ example: internet.userAgent() })
   readonly device: string;
 

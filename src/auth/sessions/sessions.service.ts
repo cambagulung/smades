@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
+import { UserDto } from '../users/dto/user.dto';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { SessionDto } from './dto/session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
@@ -29,6 +30,14 @@ export class SessionsService {
     const session = await this.sessionRepository.findOneOrFail(uuid, options);
 
     return new SessionDto(session);
+  }
+
+  async getUser(uuid: string): Promise<UserDto | null> {
+    const session = await this.sessionRepository.findOneOrFail(uuid, {
+      relations: ['user'],
+    });
+
+    return (session.user && new UserDto(session.user)) || null;
   }
 
   async seen(uuid: string): Promise<SessionDto> {
