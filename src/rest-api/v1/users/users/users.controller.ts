@@ -18,8 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PermissionDto } from 'src/auth/permissions/dto/permission.dto';
-import { RoleDto } from 'src/auth/roles/dto/role.dto';
 import { User } from 'src/auth/users/decorators/user.decorator';
 import { CreateUserDto } from 'src/auth/users/dto/create-user.dto';
 import { UpdateUserDto } from 'src/auth/users/dto/update-user.dto';
@@ -56,44 +54,6 @@ export class UsersController {
 
       throw e;
     }
-  }
-
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'mengabil daftar hak akses yang dimiliki pengguna pengguna',
-  })
-  @ApiParam({
-    name: 'username',
-    example: 'lingu',
-    description: 'username pengguna yang akan dicari',
-  })
-  @ApiOkResponse({
-    isArray: true,
-    type: PermissionDto,
-    description: 'daftar hak akses pengguna yang diperoleh dari username',
-  })
-  @Get(':username/permissions')
-  async getPermissions(@Param('username') username: string) {
-    //
-  }
-
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'mengabil daftar posisi pengguna',
-  })
-  @ApiParam({
-    name: 'username',
-    example: 'lingu',
-    description: 'username pengguna yang akan dicari',
-  })
-  @ApiOkResponse({
-    isArray: true,
-    type: RoleDto,
-    description: 'daftar posisi pengguna yang diperoleh dari username',
-  })
-  @Get(':username/roles')
-  async getRoles(@Param('username') username: string) {
-    //
   }
 
   @ApiBearerAuth()
