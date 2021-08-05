@@ -6,38 +6,41 @@ import {
   NestExpressApplication,
 } from '@nestjs/platform-express';
 import { useContainer as useContainerValidator } from 'class-validator';
-import { RestApiModule } from './rest-api/rest-api.module';
-import { BasicWebModule } from './basic-web/basic-web.module';
+import { ApiModule } from './http/api/api.module';
+import { WebModule } from './http/web/web.module';
 import { join } from 'path/posix';
 
-import * as express from 'express';
-import * as http from 'http';
-
 async function bootstrap() {
-  const server = express();
+  const server = new ExpressAdapter();
 
-  const restApi = await NestFactory.create<NestExpressApplication>(
-    RestApiModule,
-    new ExpressAdapter(server),
+  const api = await NestFactory.create<NestExpressApplication>(
+    ApiModule,
+    server,
   );
 
-  useContainerValidator(restApi.select(RestApiModule), {
+  api.init();
+  api.setGlobalPrefix('api');
+  api.enableVersioning({ type: VersioningType.URI });
+  api.useGlobalPipes(new ValidationPipe());
+
+  useContainerValidator(api.select(ApiModule), {
     fallbackOnErrors: true,
   });
 
-  restApi.setGlobalPrefix('api');
-  restApi.enableVersioning({ type: VersioningType.URI });
-  restApi.useGlobalPipes(new ValidationPipe());
-
-  const basicWeb = await NestFactory.create<NestExpressApplication>(
-    BasicWebModule,
-    new ExpressAdapter(server),
+  const web = await NestFactory.create<NestExpressApplication>(
+    WebModule,
+    server,
   );
 
-  basicWeb.useGlobalPipes(new ValidationPipe());
-  basicWeb.useStaticAssets(join(__dirname, '..', 'public'));
-  basicWeb.setBaseViewsDir(join(__dirname, '..', 'views'));
-  basicWeb.setViewEngine('hbs');
+  web.init();
+  web.useGlobalPipes(new ValidationPipe());
+  web.useStaticAssets(join(__dirname, '..', 'public'));
+  web.setBaseViewsDir(join(__dirname, '..', 'views'));
+  web.setViewEngine('hbs');
+
+  useContainerValidator(web.select(WebModule), {
+    fallbackOnErrors: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Smades Open API')
@@ -49,14 +52,11 @@ async function bootstrap() {
 
   SwaggerModule.setup(
     'api-docs',
-    basicWeb,
-    SwaggerModule.createDocument(restApi, config),
+    web,
+    SwaggerModule.createDocument(api, config),
   );
 
-  restApi.init();
-  basicWeb.init();
-
-  http.createServer(server).listen(3300);
+  server.listen(3300);
 }
 
 bootstrap();
