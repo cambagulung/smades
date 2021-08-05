@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsEmail, IsString, MinLength } from 'class-validator';
 import { internet, name } from 'faker';
-import { IsUnique } from 'src/validator/decorators/is-unique.decorator';
+import { IsUnique } from 'src/decorators/is-unique.decorator';
 import { UserEntity } from '../entities/user.entity';
 
 export class CreateUserDto {

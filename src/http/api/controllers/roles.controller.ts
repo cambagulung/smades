@@ -10,11 +10,11 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/http/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/http/guards/jwt-auth.guard';
 import { CreateRoleDto } from 'src/auth/roles/dto/create-role.dto';
 import { UpdateRoleDto } from 'src/auth/roles/dto/update-role.dto';
 import { RolesService } from 'src/auth/roles/roles.service';
-import { User } from 'src/http/users/decorators/user.decorator';
+import { User } from 'src/http/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 

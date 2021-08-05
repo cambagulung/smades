@@ -13,8 +13,8 @@ import {
 import { CategoriesService } from 'src/article/categories/categories.service';
 import { CreateCategoryDto } from 'src/article/categories/dto/create-category.dto';
 import { UpdateCategoryDto } from 'src/article/categories/dto/update-category.dto';
-import { JwtAuthGuard } from 'src/http/auth/guards/jwt-auth.guard';
-import { User } from 'src/http/users/decorators/user.decorator';
+import { JwtAuthGuard } from 'src/http/guards/jwt-auth.guard';
+import { User } from 'src/http/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 

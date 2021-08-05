@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Slug } from 'src/validator/decorators/slug.decorator';
+import { Slug } from 'src/decorators/slug.decorator';
 import { CategoryEntity } from '../entities/category.entity';
 
 export class CreateCategoryDto {
