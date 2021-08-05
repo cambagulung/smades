@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SessionEntity } from '../../../auth/sessions/entities/session.entity';
+import { SessionEntity } from 'src/auth/sessions/entities/session.entity';
 
 export const ActiveSession = createParamDecorator(
   (data: string, context: ExecutionContext) => {

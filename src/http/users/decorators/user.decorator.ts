@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserDto } from '../../../auth/users/dto/user.dto';
+import { UserDto } from 'src/auth/users/dto/user.dto';
 
 export const User = createParamDecorator(
   (data: string, context: ExecutionContext) => {
