@@ -26,7 +26,7 @@ import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
 @ApiTags('users')
-@Controller('api/v1/users')
+@Controller({ version: '1', path: 'users' })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

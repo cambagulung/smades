@@ -18,7 +18,7 @@ import { User } from 'src/auth/users/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
-@Controller('api/v1/roles')
+@Controller({ version: '1', path: 'roles' })
 export class RolesController {
   constructor(
     private readonly rolesService: RolesService,

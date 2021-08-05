@@ -12,7 +12,7 @@ import { PermissionDto } from 'src/auth/permissions/dto/permission.dto';
 import { AttachDto } from './dto/attach.dto';
 
 @ApiTags('users', 'users permissions')
-@Controller('api/v1/users/:username/permissions')
+@Controller({ version: '1', path: 'users/:username/permissions' })
 export class PermissionsController {
   @ApiBearerAuth()
   @ApiOperation({

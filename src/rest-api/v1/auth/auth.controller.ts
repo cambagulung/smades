@@ -24,7 +24,7 @@ import { UserDto } from 'src/auth/users/dto/user.dto';
 import { UserEntity } from 'src/auth/users/entities/user.entity';
 
 @ApiTags('auth')
-@Controller('api/v1/auth')
+@Controller({ version: '1', path: 'auth' })
 export class AuthController {
   constructor(private authService: AuthService) {}
 

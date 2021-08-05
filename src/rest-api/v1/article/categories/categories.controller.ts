@@ -18,7 +18,7 @@ import { User } from 'src/auth/users/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
-@Controller('api/v1/article/categories')
+@Controller({ version: '1', path: 'article/categories' })
 export class CategoriesController {
   constructor(
     private readonly categoriesService: CategoriesService,

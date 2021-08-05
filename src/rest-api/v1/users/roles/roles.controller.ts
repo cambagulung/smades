@@ -11,7 +11,7 @@ import { RoleDto } from 'src/auth/roles/dto/role.dto';
 import { AttachDto } from './dto/attach.dto';
 
 @ApiTags('users', 'users roles')
-@Controller('api/v1/users/:username/roles')
+@Controller({ version: '1', path: 'users/:username/roles' })
 export class RolesController {
   @ApiBearerAuth()
   @ApiOperation({
