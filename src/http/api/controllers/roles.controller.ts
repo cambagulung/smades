@@ -11,26 +11,26 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/http/auth/guards/jwt-auth.guard';
-import { CreatePermissionDto } from 'src/auth/permissions/dto/create-permission.dto';
-import { UpdatePermissionDto } from 'src/auth/permissions/dto/update-permission.dto';
-import { PermissionsService } from 'src/auth/permissions/permissions.service';
+import { CreateRoleDto } from 'src/auth/roles/dto/create-role.dto';
+import { UpdateRoleDto } from 'src/auth/roles/dto/update-role.dto';
+import { RolesService } from 'src/auth/roles/roles.service';
 import { User } from 'src/http/users/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
-@Controller({ version: '1', path: 'permissions' })
-export class PermissionsController {
+@Controller({ version: '1', path: 'roles' })
+export class RolesApiController {
   constructor(
-    private readonly permissionsService: PermissionsService,
+    private readonly rolesService: RolesService,
     private readonly usersService: UsersService,
   ) {}
 
   @Get(':name')
   async get(@Param('name') name: string) {
     try {
-      const permission = await this.permissionsService.findByName(name);
+      const role = await this.rolesService.findByName(name);
 
-      return permission;
+      return role;
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
         throw new NotFoundException(e.message);
@@ -42,19 +42,13 @@ export class PermissionsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(
-    @User('uuid') userUuid: string,
-    @Body() data: CreatePermissionDto,
-  ) {
-    const createable = await this.usersService.userCan(
-      userUuid,
-      'create permission',
-    );
+  async create(@User('uuid') userUuid: string, @Body() data: CreateRoleDto) {
+    const createable = await this.usersService.userCan(userUuid, 'create role');
 
-    if (createable) return await this.permissionsService.create(data);
+    if (createable) return await this.rolesService.create(data);
 
     throw new ForbiddenException(
-      'You dont have permissions to create new permission',
+      'You dont have permissions to create new role',
     );
   }
 
@@ -63,16 +57,13 @@ export class PermissionsController {
   async update(
     @User('uuid') userUuid: string,
     @Param('uuid') uuid: string,
-    @Body() data: UpdatePermissionDto,
+    @Body() data: UpdateRoleDto,
   ) {
-    const updateable = await this.usersService.userCan(
-      userUuid,
-      'update permission',
-    );
+    const updateable = await this.usersService.userCan(userUuid, 'update role');
 
     if (updateable || userUuid == uuid) {
       try {
-        return await this.permissionsService.update(uuid, data);
+        return await this.rolesService.update(uuid, data);
       } catch (e) {
         if (e instanceof EntityNotFoundError) {
           throw new NotFoundException(e.message);
@@ -83,18 +74,18 @@ export class PermissionsController {
     }
 
     throw new ForbiddenException(
-      'You dont have permissions to update this permission',
+      'You dont have permissions to update this role',
     );
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':uuid')
   async delete(@User('uuid') userUuid: string, @Param('uuid') uuid: string) {
-    const deletable = this.usersService.userCan(userUuid, 'delete permission');
+    const deletable = this.usersService.userCan(userUuid, 'delete role');
 
     if (deletable && userUuid != uuid) {
       try {
-        return await this.permissionsService.remove(uuid);
+        return await this.rolesService.remove(uuid);
       } catch (e) {
         if (e instanceof EntityNotFoundError) {
           throw new NotFoundException(e.message);
@@ -105,7 +96,7 @@ export class PermissionsController {
     }
 
     throw new ForbiddenException(
-      'You dont have permissions to delete this permission',
+      'You dont have permissions to delete this role',
     );
   }
 }

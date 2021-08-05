@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { V1Module } from './v1/v1.module';
+import { UsersApiController } from './controllers/users.controller';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), V1Module],
+  imports: [TypeOrmModule.forRoot()],
+  controllers: [UsersApiController],
 })
 export class ApiModule {}

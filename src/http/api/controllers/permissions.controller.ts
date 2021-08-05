@@ -10,27 +10,27 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CategoriesService } from 'src/article/categories/categories.service';
-import { CreateCategoryDto } from 'src/article/categories/dto/create-category.dto';
-import { UpdateCategoryDto } from 'src/article/categories/dto/update-category.dto';
 import { JwtAuthGuard } from 'src/http/auth/guards/jwt-auth.guard';
+import { CreatePermissionDto } from 'src/auth/permissions/dto/create-permission.dto';
+import { UpdatePermissionDto } from 'src/auth/permissions/dto/update-permission.dto';
+import { PermissionsService } from 'src/auth/permissions/permissions.service';
 import { User } from 'src/http/users/decorators/user.decorator';
 import { UsersService } from 'src/auth/users/users.service';
 import { EntityNotFoundError } from 'typeorm';
 
-@Controller({ version: '1', path: 'article/categories' })
-export class CategoriesController {
+@Controller({ version: '1', path: 'permissions' })
+export class PermissionsApiController {
   constructor(
-    private readonly categoriesService: CategoriesService,
+    private readonly permissionsService: PermissionsService,
     private readonly usersService: UsersService,
   ) {}
 
-  @Get(':slug')
-  async get(@Param('slug') slug: string) {
+  @Get(':name')
+  async get(@Param('name') name: string) {
     try {
-      const category = await this.categoriesService.findBySlug(slug);
+      const permission = await this.permissionsService.findByName(name);
 
-      return category;
+      return permission;
     } catch (e) {
       if (e instanceof EntityNotFoundError) {
         throw new NotFoundException(e.message);
@@ -44,18 +44,17 @@ export class CategoriesController {
   @Post()
   async create(
     @User('uuid') userUuid: string,
-    @Body() data: CreateCategoryDto,
+    @Body() data: CreatePermissionDto,
   ) {
     const createable = await this.usersService.userCan(
       userUuid,
-      'c',
-      'create category',
+      'create permission',
     );
 
-    if (createable) return await this.categoriesService.create(data);
+    if (createable) return await this.permissionsService.create(data);
 
     throw new ForbiddenException(
-      'You dont have permissions to create new category',
+      'You dont have permissions to create new permission',
     );
   }
 
@@ -64,16 +63,16 @@ export class CategoriesController {
   async update(
     @User('uuid') userUuid: string,
     @Param('uuid') uuid: string,
-    @Body() data: UpdateCategoryDto,
+    @Body() data: UpdatePermissionDto,
   ) {
     const updateable = await this.usersService.userCan(
       userUuid,
-      'update category',
+      'update permission',
     );
 
     if (updateable || userUuid == uuid) {
       try {
-        return await this.categoriesService.update(uuid, data);
+        return await this.permissionsService.update(uuid, data);
       } catch (e) {
         if (e instanceof EntityNotFoundError) {
           throw new NotFoundException(e.message);
@@ -84,18 +83,18 @@ export class CategoriesController {
     }
 
     throw new ForbiddenException(
-      'You dont have permissions to update this category',
+      'You dont have permissions to update this permission',
     );
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':uuid')
   async delete(@User('uuid') userUuid: string, @Param('uuid') uuid: string) {
-    const deletable = this.usersService.userCan(userUuid, 'delete category');
+    const deletable = this.usersService.userCan(userUuid, 'delete permission');
 
     if (deletable && userUuid != uuid) {
       try {
-        return await this.categoriesService.remove(uuid);
+        return await this.permissionsService.remove(uuid);
       } catch (e) {
         if (e instanceof EntityNotFoundError) {
           throw new NotFoundException(e.message);
@@ -106,7 +105,7 @@ export class CategoriesController {
     }
 
     throw new ForbiddenException(
-      'You dont have permissions to delete this category',
+      'You dont have permissions to delete this permission',
     );
   }
 }
